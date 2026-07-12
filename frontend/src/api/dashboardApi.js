@@ -1,6 +1,6 @@
-import axiosInstance from './axiosInstance';
+import api from '../services/api';
 
-export const checkHealth = async () => {
-  const { data } = await axiosInstance.get('/health');
-  return data;
-};
+export async function getOverview() {
+  const res = await api.get('/dashboard/overview');
+  return res.data.data;
+}
