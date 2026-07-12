@@ -40,15 +40,36 @@ export default function Dashboard() {
   const [monthlyExpenses, setMonthlyExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [reportsForbidden, setReportsForbidden] = useState(false);
 
   useEffect(() => {
     const load = async () => {
       setLoading(true);
+      setError(null);
+      setReportsForbidden(false);
       try {
-        const [ov, tbs, me] = await Promise.all([getOverview(), getTripsByStatus(), getMonthlyExpenses()]);
+        const ov = await getOverview();
         setOverview(ov);
+      } catch (err) {
+        setError(err?.response?.data?.message || err?.message || 'Failed to load dashboard overview');
+        setLoading(false);
+        return;
+      }
+
+      // Fetch reports independently so overview still shows when reports are forbidden
+      try {
+        const tbs = await getTripsByStatus();
         setTripsByStatus((tbs || []).map((r) => ({ label: r._id || 'unknown', value: r.count || 0 })));
-        // monthly expenses: transform { _id: { year, month }, total }
+      } catch (err) {
+        if (err?.response?.status === 403) {
+          setReportsForbidden(true);
+        } else {
+          console.error('Trips by status error', err);
+        }
+      }
+
+      try {
+        const me = await getMonthlyExpenses();
         const months = (me || []).map((r) => {
           const y = r._id.year;
           const m = r._id.month;
@@ -57,10 +78,14 @@ export default function Dashboard() {
         });
         setMonthlyExpenses(months);
       } catch (err) {
-        setError(err?.response?.data?.message || err?.message || 'Failed to load dashboard');
-      } finally {
-        setLoading(false);
+        if (err?.response?.status === 403) {
+          setReportsForbidden(true);
+        } else {
+          console.error('Monthly expenses error', err);
+        }
       }
+
+      setLoading(false);
     };
     load();
   }, []);
@@ -82,12 +107,20 @@ export default function Dashboard() {
         <div className="lg:col-span-2">
           <div className="mb-4">
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Trips by status</h3>
-            <BarChart data={tripsByStatus} labelKey="label" valueKey="value" />
+            {reportsForbidden ? (
+              <div className="p-4 bg-yellow-50 dark:bg-yellow-900 rounded text-sm text-yellow-800 dark:text-yellow-200">You don't have permission to view this report. Please contact an administrator.</div>
+            ) : (
+              <BarChart data={tripsByStatus} labelKey="label" valueKey="value" />
+            )}
           </div>
 
           <div>
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Monthly expenses</h3>
-            <BarChart data={monthlyExpenses} labelKey="label" valueKey="value" />
+            {reportsForbidden ? (
+              <div className="p-4 bg-yellow-50 dark:bg-yellow-900 rounded text-sm text-yellow-800 dark:text-yellow-200">You don't have permission to view this report. Please contact an administrator.</div>
+            ) : (
+              <BarChart data={monthlyExpenses} labelKey="label" valueKey="value" />
+            )}
           </div>
         </div>
 
