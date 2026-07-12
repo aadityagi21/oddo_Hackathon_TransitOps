@@ -1,9 +1,17 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { NAV_ITEMS } from '../utils/constants';
 import { useTheme } from '../hooks/useTheme';
+import { useAuthContext } from '../context/AuthContext';
 
 export default function Sidebar() {
   const { isDark, toggleTheme } = useTheme();
+  const { logout, isAuthenticated } = useAuthContext();
+  const navigate = useNavigate();
+
+  const onLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <aside className="flex w-64 flex-col border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
@@ -39,6 +47,17 @@ export default function Sidebar() {
 
       {/* Footer */}
       <div className="border-t border-gray-200 p-4 dark:border-gray-700">
+        {isAuthenticated && (
+          <button
+            type="button"
+            onClick={onLogout}
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 mb-2 text-sm font-medium text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+          >
+            <span>🔓</span>
+            Logout
+          </button>
+        )}
+
         <button
           type="button"
           onClick={toggleTheme}
