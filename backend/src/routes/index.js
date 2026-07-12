@@ -1,10 +1,15 @@
-import { Router } from 'express';
-import mongoose from 'mongoose';
+import express from 'express';
 import authRoutes from './auth.js';
 import driverRoutes from './drivers.js';
 import vehicleRoutes from './vehicles.js';
+import tripRoutes from './trips.js';
+import maintenanceRoutes from './maintenance.js';
+import fuelRoutes from './fuel.js';
+import expenseRoutes from './expenses.js';
+import dashboardRoutes from './dashboard.js';
+import mongoose from 'mongoose';
 
-const router = Router();
+const router = express.Router();
 
 router.get('/health', (_req, res) => {
   const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
@@ -24,5 +29,10 @@ router.get('/health', (_req, res) => {
 router.use('/auth', authRoutes);
 router.use('/drivers', driverRoutes);
 router.use('/vehicles', vehicleRoutes);
+router.use('/trips', tripRoutes);
+router.use('/maintenance', maintenanceRoutes);
+router.use('/fuel', fuelRoutes);
+router.use('/expenses', expenseRoutes);
+router.use('/dashboard', dashboardRoutes);
 
 export default router;
