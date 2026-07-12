@@ -22,27 +22,27 @@ export default function Login() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-24 card">
-      <h1 className="text-2xl font-semibold mb-4">Sign in</h1>
+    <div className="max-w-md mx-auto mt-24 card bg-white dark:bg-gray-800">
+      <h1 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">Sign in</h1>
       {error && <div className="mb-3 text-red-600">{error}</div>}
       <form onSubmit={onSubmit} className="space-y-3">
         <div>
-          <label className="text-sm">Email</label>
+          <label className="text-sm text-gray-700 dark:text-gray-200">Email</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 w-full rounded border px-3 py-2"
+            className="mt-1 w-full rounded border border-gray-300 bg-white text-gray-900 placeholder-gray-400 px-3 py-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             required
           />
         </div>
         <div>
-          <label className="text-sm">Password</label>
+          <label className="text-sm text-gray-700 dark:text-gray-200">Password</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="mt-1 w-full rounded border px-3 py-2"
+            className="mt-1 w-full rounded border border-gray-300 bg-white text-gray-900 placeholder-gray-400 px-3 py-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             required
           />
         </div>
@@ -57,7 +57,7 @@ export default function Login() {
         </div>
       </form>
 
-      <div className="mt-4 text-sm text-center text-gray-600">
+      <div className="mt-4 text-sm text-center text-gray-700 dark:text-gray-300">
         Don't have an account?{' '}
         <Link to="/register" className="text-primary-600 hover:underline">Create one</Link>
       </div>
