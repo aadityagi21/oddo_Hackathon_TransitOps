@@ -1,11 +1,9 @@
 import { Router } from 'express';
 import mongoose from 'mongoose';
+import authRoutes from './auth.js';
 
 const router = Router();
 
-/**
- * Health check endpoint – verifies API and database connectivity.
- */
 router.get('/health', (_req, res) => {
   const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
 
@@ -20,5 +18,7 @@ router.get('/health', (_req, res) => {
     },
   });
 });
+
+router.use('/auth', authRoutes);
 
 export default router;
