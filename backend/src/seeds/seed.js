@@ -1,7 +1,9 @@
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
+import Vehicle from '../models/Vehicle.js';
+import Driver from '../models/Driver.js';
 
 dotenv.config();
 
@@ -14,16 +16,43 @@ const seed = async () => {
     const adminEmail = process.env.SEED_ADMIN_EMAIL || 'admin@transitops.test';
     const adminPassword = process.env.SEED_ADMIN_PASSWORD || 'password';
 
-    const existing = await User.findOne({ email: adminEmail });
-    if (existing) {
+    const existingAdmin = await User.findOne({ email: adminEmail });
+    if (!existingAdmin) {
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(adminPassword, salt);
+      await User.create({ name: 'Admin', email: adminEmail, password: hash, role: 'admin' });
+      console.log('Admin user created');
+    } else {
       console.log('Admin user already exists');
-      process.exit(0);
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(adminPassword, salt);
+    // Seed sample vehicles
+    const sampleVehicles = [
+      { make: 'Toyota', model: 'Hiace', registrationNumber: 'ABC-1001', capacity: 15, status: 'available', odometer: 12000 },
+      { make: 'Mercedes', model: 'Sprinter', registrationNumber: 'ABC-1002', capacity: 20, status: 'available', odometer: 5000 },
+    ];
 
-    await User.create({ name: 'Admin', email: adminEmail, password: hash, role: 'admin' });
+    for (const v of sampleVehicles) {
+      const exists = await Vehicle.findOne({ registrationNumber: v.registrationNumber });
+      if (!exists) {
+        await Vehicle.create(v);
+        console.log(`Vehicle ${v.registrationNumber} created`);
+      }
+    }
+
+    // Seed sample drivers
+    const sampleDrivers = [
+      { name: 'John Doe', licenseNumber: 'LIC-1001', phone: '555-0101' },
+      { name: 'Jane Smith', licenseNumber: 'LIC-1002', phone: '555-0102' },
+    ];
+
+    for (const d of sampleDrivers) {
+      const exists = await Driver.findOne({ licenseNumber: d.licenseNumber });
+      if (!exists) {
+        await Driver.create(d);
+        console.log(`Driver ${d.licenseNumber} created`);
+      }
+    }
 
     console.log('Seed complete');
     process.exit(0);

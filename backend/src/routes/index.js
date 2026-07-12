@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import mongoose from 'mongoose';
 import authRoutes from './auth.js';
+import driverRoutes from './drivers.js';
+import vehicleRoutes from './vehicles.js';
 
 const router = Router();
 
@@ -20,5 +22,7 @@ router.get('/health', (_req, res) => {
 });
 
 router.use('/auth', authRoutes);
+router.use('/drivers', driverRoutes);
+router.use('/vehicles', vehicleRoutes);
 
 export default router;
