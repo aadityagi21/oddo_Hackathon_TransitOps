@@ -1,31 +1,42 @@
-import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
 
-export default function Login() {
+export default function Register() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('dispatcher');
   const [error, setError] = useState(null);
-  const { login, loading } = useAuthContext();
+  const { register, loading } = useAuthContext();
   const navigate = useNavigate();
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-    const res = await login(email, password);
+    const res = await register(name, email, password, role);
     if (res.success) {
       navigate('/');
     } else {
-      setError(res.message || 'Login failed');
+      setError(res.message || 'Registration failed');
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-24 card">
-      <h1 className="text-2xl font-semibold mb-4">Sign in</h1>
+    <div className="max-w-md mx-auto mt-16 card">
+      <h1 className="text-2xl font-semibold mb-4">Create an account</h1>
       {error && <div className="mb-3 text-red-600">{error}</div>}
       <form onSubmit={onSubmit} className="space-y-3">
+        <div>
+          <label className="text-sm">Name</label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="mt-1 w-full rounded border px-3 py-2"
+            required
+          />
+        </div>
         <div>
           <label className="text-sm">Email</label>
           <input
@@ -47,20 +58,26 @@ export default function Login() {
           />
         </div>
         <div>
+          <label className="text-sm">Role</label>
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            className="mt-1 w-full rounded border px-3 py-2"
+          >
+            <option value="dispatcher">Dispatcher</option>
+            <option value="driver">Driver</option>
+          </select>
+        </div>
+        <div>
           <button
             type="submit"
             className="w-full rounded bg-primary-600 px-4 py-2 text-white"
             disabled={loading}
           >
-            {loading ? 'Signing in...' : 'Sign in'}
+            {loading ? 'Creating account...' : 'Create account'}
           </button>
         </div>
       </form>
-
-      <div className="mt-4 text-sm text-center text-gray-600">
-        Don't have an account?{' '}
-        <Link to="/register" className="text-primary-600 hover:underline">Create one</Link>
-      </div>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import AuthLayout from '../layouts/AuthLayout';
 import ProtectedRoute from './ProtectedRoute';
 import Dashboard from '../pages/dashboard/Dashboard';
 import Login from '../pages/auth/Login';
+import Register from '../pages/auth/Register';
 import Vehicles from '../pages/vehicles/Vehicles';
 import Drivers from '../pages/drivers/Drivers';
 
@@ -13,6 +14,7 @@ export default function AppRoutes() {
       {/* Auth routes */}
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Route>
 
       {/* Protected app routes */}
