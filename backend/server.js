@@ -15,14 +15,14 @@ const startServer = async () => {
     }
 
     await mongoose.connect(mongoUri);
-    console.log('✅ MongoDB connected successfully');
+    console.log('MongoDB connected successfully');
 
     app.listen(PORT, () => {
-      console.log(`🚀 TransitOps API running on http://localhost:${PORT}`);
-      console.log(`📋 Health check: http://localhost:${PORT}/api/v1/health`);
+      console.log(`TransitOps API running on http://localhost:${PORT}`);
+      console.log(`Health check: http://localhost:${PORT}/api/v1/health`);
     });
   } catch (error) {
-    console.error('❌ Failed to start server:', error.message);
+    console.error('Failed to start server:', error.message);
     process.exit(1);
   }
 };
@@ -30,7 +30,7 @@ const startServer = async () => {
 // Graceful shutdown
 process.on('SIGINT', async () => {
   await mongoose.connection.close();
-  console.log('\n🔌 MongoDB connection closed');
+  console.log('MongoDB connection closed');
   process.exit(0);
 });
 

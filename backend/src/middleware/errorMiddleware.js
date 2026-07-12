@@ -15,7 +15,7 @@ export const errorMiddleware = (err, req, res, _next) => {
   const message = err.message || 'Internal Server Error';
 
   if (process.env.NODE_ENV === 'development') {
-    console.error('❌ Error:', err);
+    console.error('Error:', err);
   }
 
   res.status(statusCode).json({
