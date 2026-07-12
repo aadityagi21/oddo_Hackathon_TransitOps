@@ -1,12 +1,11 @@
 import { Navigate } from 'react-router-dom';
+import { useAuthContext } from '../context/AuthContext';
 
-/**
- * Protected route wrapper – full auth check in Phase 2.
- * Currently allows all access for development.
- */
 export default function ProtectedRoute({ children }) {
-  // Phase 2: check isAuthenticated from AuthContext
-  const isAuthenticated = true;
+  const { isAuthenticated, loading } = useAuthContext();
+
+  // While auth state initialises, don't render anything (avoids flicker)
+  if (loading) return null;
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
